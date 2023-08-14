@@ -11,22 +11,6 @@ import src.interactive.functions as interactive
 import csv
 import pandas as pd
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--device", type=str, default="cpu")
@@ -52,7 +36,7 @@ if __name__ == "__main__":
     else:
         cfg.device = "cpu"
 
-    data=pd.read_csv("scripts/interactive/MOH-X_formatted_svo_cleaned.csv",header=0)
+    data=pd.read_csv("scripts/interactive/train.tsv",sep="\t",header=0)
     
 
     data["new_sentences"]=" "
@@ -65,10 +49,33 @@ if __name__ == "__main__":
         "UsedFor":"is used for",
         "MadeOf":"is made of"
     }
-
+    count=0
+    count2=0
     for index,row in data.iterrows():
-        input_event=row["arg1"]
-        input_event2=row["verb"]
+        
+        count2+=1
+        print(count2)
+        if count2<5300:
+	    continue
+        input_sentence=row["sentence"]
+        v_ind=int(row["v_index"])
+        #print(input_sentence)
+        #print(len(input_sentence.split()))
+        #print(v_ind)
+        if len(input_sentence.split())-1<v_ind:
+            data.at[index,"new_sentences"]=input_sentence
+            data.at[index,"new_ind"]=v_ind
+            #print("Inside")
+            continue
+        input_event=input_sentence.split()[v_ind]
+        input_event2=row["new_column"]
+        if !isinstance(input_event2,str):
+	    data.at[index,"new_sentences"]=input_sentence
+            data.at[index,"new_ind"]=v_ind
+            continue
+        print("Input event 1: ",input_event)
+        print("Input event 2: ",input_event2)
+        print("Input sentence : ",input_sentence)
         sentences=[]
         relations=["HasProperty","AtLocation","UsedFor"]
         for relation in relations:
@@ -92,11 +99,12 @@ if __name__ == "__main__":
         sent_str_2=" ".join(e for e in sentences_copy)
         lis=sentence_str.split()
         lis_2=sent_str_2.split()
-        new_ind=len(lis_2)+row["verb_idx"]
+        new_ind=len(lis_2)+row["v_index"]
         data.at[index,"new_sentences"]=sentence_str
         data.at[index,"new_ind"]=new_ind
-        
-    data.to_csv("Final_Inferences_MOH-X_data.csv")
+        count+=1
+        print(count)
+    #data.to_csv("Final_train_data.csv",sep="\t",index=False)
 
 
     
