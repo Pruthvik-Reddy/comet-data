@@ -50,13 +50,9 @@ if __name__ == "__main__":
         "MadeOf":"is made of"
     }
     count=0
-    count2=0
+    #count2=0
     for index,row in data.iterrows():
         
-        count2+=1
-        print(count2)
-        if count2<5300:
-	    continue
         input_sentence=row["sentence"]
         v_ind=int(row["v_index"])
         #print(input_sentence)
@@ -65,17 +61,22 @@ if __name__ == "__main__":
         if len(input_sentence.split())-1<v_ind:
             data.at[index,"new_sentences"]=input_sentence
             data.at[index,"new_ind"]=v_ind
+            print("Inside if")
             #print("Inside")
             continue
         input_event=input_sentence.split()[v_ind]
         input_event2=row["new_column"]
-        if !isinstance(input_event2,str):
-	    data.at[index,"new_sentences"]=input_sentence
-            data.at[index,"new_ind"]=v_ind
-            continue
-        print("Input event 1: ",input_event)
-        print("Input event 2: ",input_event2)
-        print("Input sentence : ",input_sentence)
+        if isinstance(input_event2,float):
+             print("Inside if")
+             data.at[index,"new_sentences"]=input_sentence
+             data.at[index,"new_ind"]=v_ind
+             continue
+        #print(not (isinstance(input_event2,str) or isinstance(input_event2,float)))
+        #print(type(input_event2))
+        #print("continuing otside")
+        #print("Input event 1: ",input_event)
+        #print("Input event 2: ",input_event2)
+        #print("Input sentence : ",input_sentence)
         sentences=[]
         relations=["HasProperty","AtLocation","UsedFor"]
         for relation in relations:
@@ -103,8 +104,8 @@ if __name__ == "__main__":
         data.at[index,"new_sentences"]=sentence_str
         data.at[index,"new_ind"]=new_ind
         count+=1
-        print(count)
-    #data.to_csv("Final_train_data.csv",sep="\t",index=False)
+        #print(count)
+    data.to_csv("Final_train_data.csv",sep="\t",index=False)
 
 
     
